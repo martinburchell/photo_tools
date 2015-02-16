@@ -1,0 +1,39 @@
+#!/bin/bash
+
+function rename_photo
+{
+    echo "rename_photo"
+    echo $1
+    file=$1
+
+    gpicview $file &
+    echo "Enter a name for this photo"
+    read name
+    kill -15 $!
+    exiv2 mv -r "%Y-%m-%d_%H%M%S_${name}.renamed" $file
+}
+
+function rename_photos
+{
+    echo "rename_photos"
+    echo $1
+    files=$1
+    num_renamed=0
+    num_files=$(ls $files 2> /dev/null | wc -l)
+    if [ "$num_files" != "0" ];then
+	for file in $files; do
+	    rename_photo $file
+
+	    let "num_renamed += 1"
+	done
+    fi
+
+    return $num_renamed
+}
+
+rename_photos IMG_\*.JPG
+
+# Can't see a way to change the extension with exiv2
+if [ "$?" != "0" ]; then
+    rename .renamed.JPG .jpg *.renamed.JPG
+fi
