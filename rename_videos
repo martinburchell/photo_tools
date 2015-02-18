@@ -1,0 +1,12 @@
+#!/bin/bash
+
+videos=`ls MVI_*.AVI`
+
+for video in $videos; do
+    time=`exiftool $video | grep "Date/Time Original" | cut -b 35-53`
+    set -- "$time"
+    IFS=':'; declare -a pieces=($*)
+    # pieces=$(echo $time | tr ":" "\n")
+    new_filename=${pieces[0]}-${pieces[1]}-${pieces[2]/ /_}${pieces[3]}${pieces[4]}${pieces[5]}.avi
+    mv $video $new_filename
+done
