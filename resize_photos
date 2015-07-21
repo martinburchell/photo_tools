@@ -1,0 +1,23 @@
+#!/bin/bash
+
+if [ "$#" != "2" ]; then
+    echo "Usage: $0 <dirname> <percentage>"
+    exit 1
+fi 
+
+dirname=$1
+percentage=$2
+
+num_unique=`for file in *.jpg; do echo ${file:18}; done | sort | uniq | wc -l`
+num_files=`ls -1 *.jpg | wc -l`
+
+if [ "$num_files" != "$num_unique" ]; then
+    echo "One or more files is not uniquely named (after the date)"
+    exit 1
+fi 
+
+mkdir -p $dirname
+
+for file in *.jpg; do
+    convert -auto-orient -thumbnail ${percentage}% -quality 65 $file ${dirname}/${file:18}
+done
