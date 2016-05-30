@@ -35,5 +35,5 @@ rename_photos IMG_\*.JPG
 
 # Can't see a way to change the extension with exiv2
 if [ "$?" != "0" ]; then
-    rename .renamed.JPG .jpg *.renamed.JPG
+    for f in *.JPG; do mv "$f" "${f/.renamed.JPG/.jpg}"; done
 fi
